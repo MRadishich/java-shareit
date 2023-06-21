@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 @Repository
 @RequiredArgsConstructor
 public class ItemRepositoryImpl implements ItemRepository {
-    private final static Map<Long, Item> ITEMS = new HashMap<>();
-    private final static AtomicLong ITEM_ID = new AtomicLong(1);
+    private static final Map<Long, Item> ITEMS = new HashMap<>();
+    private static final AtomicLong ITEM_ID = new AtomicLong(1);
 
     @Override
     public Item save(Item item) {
