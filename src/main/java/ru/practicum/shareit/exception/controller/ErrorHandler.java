@@ -1,15 +1,15 @@
 package ru.practicum.shareit.exception.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.exception.model.AlreadyExistsException;
-import ru.practicum.shareit.exception.model.ErrorResponse;
-import ru.practicum.shareit.exception.model.ForbiddenException;
-import ru.practicum.shareit.exception.model.NotFountException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import ru.practicum.shareit.exception.model.*;
 
 import java.util.stream.Collectors;
 
@@ -30,7 +30,19 @@ public class ErrorHandler {
         return new ErrorResponse(error);
     }
 
-    @ExceptionHandler()
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleConversionFailedException(MethodArgumentTypeMismatchException ex) {
+        log.warn(ex.getMessage());
+
+        if ("state".equals(ex.getName())) {
+            return new ErrorResponse("Unknown state: " + ex.getValue());
+        }
+
+        return new ErrorResponse(ex.getMessage());
+    }
+
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFoundException(NotFountException ex) {
         log.warn(ex.getMessage());
@@ -57,6 +69,33 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorResponse handleForbiddenException(ForbiddenException ex) {
+        log.warn(ex.getMessage());
+
+        return new ErrorResponse(ex.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        log.warn(ex.getMessage());
+
+        Throwable cause = ex.getCause();
+
+        if (cause instanceof ConstraintViolationException) {
+            String constraintName = ((ConstraintViolationException) cause).getConstraintName();
+            if (constraintName == null) {
+                return new ErrorResponse(cause.getMessage());
+            }
+
+            return new ErrorResponse("Constraint violated: " + constraintName);
+        }
+
+        return new ErrorResponse(ex.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleBadRequestException(BadRequestException ex) {
         log.warn(ex.getMessage());
 
         return new ErrorResponse(ex.getMessage());
