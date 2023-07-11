@@ -51,8 +51,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto getItemById(Long userId, Long itemId) {
-        Item item = itemRepository.findById(itemId).
-                orElseThrow(() -> new NotFountException("Item with id = " + itemId + " not found."));
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new NotFountException("Item with id = " + itemId + " not found."));
 
         if (item.getOwnerId().equals(userId)) {
             return ItemMapper.toItemDtoForOwner(item);
