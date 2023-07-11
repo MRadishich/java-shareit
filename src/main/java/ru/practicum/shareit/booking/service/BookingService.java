@@ -13,6 +13,7 @@ public interface BookingService {
     BookingOutputDto getBooking(long bookingId, long userId);
 
     List<BookingOutputDto> getBookingsByBookerIdAndState(long bookerId, State state, Sort.Direction sort);
+
     List<BookingOutputDto> getBookingsByOwnerIdAndState(long ownerId, State state, Sort.Direction sort);
 
     BookingOutputDto changeStatus(long userId, long bookingId, boolean approved);
