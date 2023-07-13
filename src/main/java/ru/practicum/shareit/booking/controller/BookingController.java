@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
+@Slf4j
 public class BookingController {
     private final BookingService bookingService;
 
@@ -23,7 +25,6 @@ public class BookingController {
     @ResponseStatus(HttpStatus.CREATED)
     public BookingOutputDto bookItem(@RequestHeader(Constant.USER_ID_HEADER) long userId,
                                      @RequestBody @Valid BookingInputDto bookingDto) {
-
         return bookingService.createBooking(bookingDto, userId);
     }
 
@@ -35,16 +36,24 @@ public class BookingController {
 
     @GetMapping
     public List<BookingOutputDto> getBookingsByBooker(@RequestHeader(Constant.USER_ID_HEADER) long userId,
-                                                      @RequestParam(defaultValue = "all") State state,
+                                                      @RequestParam(defaultValue = "all") String state,
                                                       @RequestParam(defaultValue = "desc") String sort) {
-        return bookingService.getBookingsByBookerIdAndState(userId, state, Sort.Direction.valueOf(sort.toUpperCase()));
+        return bookingService.getBookingsByBookerIdAndState(
+                userId,
+                State.getEnum(state),
+                Sort.Direction.valueOf(sort.toUpperCase())
+        );
     }
 
     @GetMapping("/owner")
     public List<BookingOutputDto> getBookingsByOwner(@RequestHeader(Constant.USER_ID_HEADER) long userId,
-                                                     @RequestParam(defaultValue = "all") State state,
+                                                     @RequestParam(defaultValue = "all") String state,
                                                      @RequestParam(defaultValue = "desc") String sort) {
-        return bookingService.getBookingsByOwnerIdAndState(userId, state, Sort.Direction.valueOf(sort.toUpperCase()));
+        return bookingService.getBookingsByOwnerIdAndState(
+                userId,
+                State.getEnum(state),
+                Sort.Direction.valueOf(sort.toUpperCase())
+        );
     }
 
     @PatchMapping("/{bookingId}")

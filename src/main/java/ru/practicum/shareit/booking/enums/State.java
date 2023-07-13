@@ -7,5 +7,16 @@ public enum State {
     PAST,
     FUTURE,
     WAITING,
-    REJECTED
+    REJECTED;
+
+
+    public static State getEnum(String name) {
+        for (State value : State.values()) {
+            if (name.equalsIgnoreCase(value.name())) {
+                return value;
+            }
+        }
+
+        throw new IllegalArgumentException("Unknown state: " + name);
+    }
 }

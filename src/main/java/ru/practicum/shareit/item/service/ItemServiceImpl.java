@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class ItemServiceImpl implements ItemService {
     private final BookingRepository bookingRepository;
     private final ItemRepository itemRepository;
@@ -50,6 +49,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ItemDto getItemById(Long userId, Long itemId) {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFountException("Item with id = " + itemId + " not found."));
@@ -62,6 +62,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ItemDto> getItemsByOwnerId(Long userId) {
         return itemRepository.findByOwnerId(userId)
                 .stream()
@@ -71,6 +72,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ItemDto> getItemsByKeyword(String keyword) {
         if (Objects.isNull(keyword) || keyword.isBlank()) {
             return List.of();

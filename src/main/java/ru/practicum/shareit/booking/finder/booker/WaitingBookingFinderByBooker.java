@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking.finder.byOwner;
+package ru.practicum.shareit.booking.finder.booker;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -14,16 +14,16 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class ApprovedBookingFinderByOwner implements BookingFinderByOwner {
+public class WaitingBookingFinderByBooker implements BookingFinderByBooker {
     private final BookingRepository bookingRepository;
 
     @Override
-    public List<Booking> findBooking(Long ownerId, Sort sort) {
-        return bookingRepository.findByItemOwnerIdAndStatus(ownerId, BookingStatus.APPROVED, sort);
+    public List<Booking> findBooking(Long bookerId, Sort sort) {
+        return bookingRepository.findByBookerIdAndStatus(bookerId, BookingStatus.WAITING, sort);
     }
 
     @Override
     public State getState() {
-        return State.APPROVED;
+        return State.WAITING;
     }
 }

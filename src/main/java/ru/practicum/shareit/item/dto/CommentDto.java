@@ -14,9 +14,9 @@ import java.time.LocalDateTime;
 @ToString
 @AllArgsConstructor
 public class CommentDto {
-    Long id;
+    private final Long id;
     @NotBlank(groups = Create.class)
-    String text;
-    String authorName;
-    LocalDateTime created;
+    private final String text;
+    private final String authorName;
+    private final LocalDateTime created;
 }

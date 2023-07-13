@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking.finder.byBooker;
+package ru.practicum.shareit.booking.finder.booker;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;

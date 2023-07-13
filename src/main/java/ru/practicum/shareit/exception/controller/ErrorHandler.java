@@ -35,10 +35,6 @@ public class ErrorHandler {
     public ErrorResponse handleConversionFailedException(MethodArgumentTypeMismatchException ex) {
         log.warn(ex.getMessage());
 
-        if ("state".equals(ex.getName())) {
-            return new ErrorResponse("Unknown state: " + ex.getValue());
-        }
-
         return new ErrorResponse(ex.getMessage());
     }
 

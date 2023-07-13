@@ -9,6 +9,7 @@ import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.user.mapper.UserMapper;
 
 import java.util.Objects;
+import java.util.Optional;
 
 @UtilityClass
 public class BookingMapper {
@@ -19,31 +20,31 @@ public class BookingMapper {
                 .build();
     }
 
-    public BookingOutputDto toOutputBookingDto(Booking booking) {
+    public Optional<BookingOutputDto> toOutputBookingDto(Booking booking) {
         if (Objects.isNull(booking)) {
-            return null;
+            return Optional.empty();
         }
 
-        return new BookingOutputDto(
+        return Optional.of(new BookingOutputDto(
                 booking.getId(),
                 ItemMapper.toItemDtoForOwner(booking.getItem()),
                 UserMapper.toUserDto(booking.getBooker()),
                 booking.getStart(),
                 booking.getEnd(),
                 booking.getStatus()
-        );
+        ));
     }
 
-    public BookingInnerDto toBookingInnerDto(Booking booking) {
+    public Optional<BookingInnerDto> toBookingInnerDto(Booking booking) {
         if (Objects.isNull(booking)) {
-            return null;
+            return Optional.empty();
         }
 
-        return new BookingInnerDto(
+        return Optional.of(new BookingInnerDto(
                 booking.getId(),
                 booking.getBooker().getId(),
                 booking.getStart(),
                 booking.getEnd()
-        );
+        ));
     }
 }

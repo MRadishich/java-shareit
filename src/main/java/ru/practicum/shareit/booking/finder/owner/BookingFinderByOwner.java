@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking.finder.byOwner;
+package ru.practicum.shareit.booking.finder.owner;
 
 import org.springframework.data.domain.Sort;
 import ru.practicum.shareit.booking.enums.State;

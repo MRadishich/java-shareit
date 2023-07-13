@@ -1,9 +1,9 @@
 package ru.practicum.shareit.item.mapper;
 
 import lombok.experimental.UtilityClass;
-import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.enums.BookingStatus;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
@@ -45,14 +45,16 @@ public class ItemMapper {
                 item.getAvailable(),
                 item.getBookings() == null ? null :
                         BookingMapper.toBookingInnerDto(item.getBookings().stream()
-                                .filter(booking -> booking.getStart().isBefore(LocalDateTime.now())
-                                        && booking.getStatus() == BookingStatus.APPROVED)
-                                .max(Comparator.comparing(Booking::getStart)).orElse(null)),
+                                        .filter(booking -> booking.getStart().isBefore(LocalDateTime.now())
+                                                && booking.getStatus() == BookingStatus.APPROVED)
+                                        .max(Comparator.comparing(Booking::getStart)).orElse(null))
+                                .orElse(null),
                 item.getBookings() == null ? null :
                         BookingMapper.toBookingInnerDto(item.getBookings().stream()
-                                .filter(booking -> booking.getStart().isAfter(LocalDateTime.now())
-                                        && booking.getStatus() == BookingStatus.APPROVED)
-                                .min(Comparator.comparing(Booking::getStart)).orElse(null)),
+                                        .filter(booking -> booking.getStart().isAfter(LocalDateTime.now())
+                                                && booking.getStatus() == BookingStatus.APPROVED)
+                                        .min(Comparator.comparing(Booking::getStart)).orElse(null))
+                                .orElse(null),
                 item.getComments() == null ? null :
                         item.getComments().stream()
                                 .map(CommentMapper::toCommentInnerDto)
