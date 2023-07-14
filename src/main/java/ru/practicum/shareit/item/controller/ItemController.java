@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.util.Constant;
 import ru.practicum.shareit.validation.Create;
+import ru.practicum.shareit.validation.Update;
 
 import java.util.List;
 
@@ -24,14 +26,22 @@ public class ItemController {
         return itemService.createItem(itemDto, userId);
     }
 
+    @PostMapping("/{itemId}/comment")
+    public CommentDto createComment(@RequestHeader(Constant.USER_ID_HEADER) long userId,
+                                    @PathVariable long itemId,
+                                    @Validated(Create.class) @RequestBody CommentDto commentDto) {
+        return itemService.createComment(commentDto, itemId, userId);
+    }
+
     @GetMapping
-    public List<ItemDto> getAllItemsByUserId(@RequestHeader(Constant.USER_ID_HEADER) long userId) {
-        return itemService.getAllItemsByOwnerId(userId);
+    public List<ItemDto> getItemsByUserId(@RequestHeader(Constant.USER_ID_HEADER) long userId) {
+        return itemService.getItemsByOwnerId(userId);
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItemById(@PathVariable long itemId) {
-        return itemService.getItemById(itemId);
+    public ItemDto getItemById(@RequestHeader(Constant.USER_ID_HEADER) long userId,
+                               @PathVariable long itemId) {
+        return itemService.getItemById(userId, itemId);
     }
 
     @GetMapping("/search")
@@ -42,7 +52,7 @@ public class ItemController {
     @PatchMapping("/{itemId}")
     public ItemDto updateItemById(@PathVariable long itemId,
                                   @RequestHeader(Constant.USER_ID_HEADER) long userId,
-                                  @RequestBody ItemDto itemDto) {
+                                  @Validated(Update.class) @RequestBody ItemDto itemDto) {
         return itemService.updateItemById(itemId, itemDto, userId);
     }
 
