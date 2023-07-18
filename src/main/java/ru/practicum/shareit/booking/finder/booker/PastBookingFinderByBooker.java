@@ -1,7 +1,7 @@
 package ru.practicum.shareit.booking.finder.booker;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.enums.State;
@@ -18,8 +18,8 @@ public class PastBookingFinderByBooker implements BookingFinderByBooker {
     private final BookingRepository bookingRepository;
 
     @Override
-    public List<Booking> findBooking(Long bookerId, Sort sort) {
-        return bookingRepository.findByBookerIdAndEndIsBefore(bookerId, LocalDateTime.now(), sort);
+    public List<Booking> findBooking(Long bookerId, Pageable pageable) {
+        return bookingRepository.findByBookerIdAndEndIsBefore(bookerId, LocalDateTime.now(), pageable);
     }
 
     @Override

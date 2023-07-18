@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.enums.BookingStatus;
@@ -63,8 +64,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ItemDto> getItemsByOwnerId(Long userId) {
-        return itemRepository.findByOwnerId(userId)
+    public List<ItemDto> getItemsByOwnerId(Long userId, Pageable pageable) {
+        return itemRepository.findByOwnerId(userId, pageable)
                 .stream()
                 .map(ItemMapper::toItemDtoForOwner)
                 .collect(Collectors.toList());
@@ -73,12 +74,12 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ItemDto> getItemsByKeyword(String keyword) {
+    public List<ItemDto> getItemsByKeyword(String keyword, Pageable pageable) {
         if (Objects.isNull(keyword) || keyword.isBlank()) {
             return List.of();
         }
 
-        return itemRepository.findByNameAndDescription(keyword, keyword)
+        return itemRepository.findByNameAndDescription(keyword, keyword, pageable)
                 .stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
@@ -110,9 +111,17 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public void deleteItemById(Long itemId) {
-        if (!itemRepository.existsById(itemId)) {
-            throw new NotFountException("Item with id = " + itemId + " not found.");
+    public void deleteItemById(Long itemId, Long userId) {
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new NotFountException("Item with id = " + itemId + " not found."));
+
+        if (!userRepository.existsById(userId)) {
+            throw new NotFountException("User with id = " + userId + " not found.");
+        }
+
+        if (!Objects.equals(item.getOwnerId(), userId)) {
+            throw new ForbiddenException("Access denied. User with id = " + userId +
+                    " does not have permission to change this item.");
         }
 
         itemRepository.deleteById(itemId);

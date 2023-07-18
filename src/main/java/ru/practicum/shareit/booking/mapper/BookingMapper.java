@@ -20,7 +20,7 @@ public class BookingMapper {
                 .build();
     }
 
-    public Optional<BookingOutputDto> toOutputBookingDto(Booking booking) {
+    public Optional<BookingOutputDto> toBookingOutputDto(Booking booking) {
         if (Objects.isNull(booking)) {
             return Optional.empty();
         }

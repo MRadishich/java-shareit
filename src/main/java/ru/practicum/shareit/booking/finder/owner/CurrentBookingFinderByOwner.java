@@ -1,7 +1,7 @@
 package ru.practicum.shareit.booking.finder.owner;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.enums.State;
@@ -17,8 +17,8 @@ public class CurrentBookingFinderByOwner implements BookingFinderByOwner {
     private final BookingRepository bookingRepository;
 
     @Override
-    public List<Booking> findBooking(Long ownerId, Sort sort) {
-        return bookingRepository.findCurrentBookingByOwnerId(ownerId, sort);
+    public List<Booking> findBooking(Long ownerId, Pageable pageable) {
+        return bookingRepository.findCurrentBookingByItemOwnerId(ownerId, pageable);
     }
 
     @Override
