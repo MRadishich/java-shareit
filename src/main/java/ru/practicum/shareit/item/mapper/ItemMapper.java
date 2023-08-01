@@ -34,7 +34,7 @@ public class ItemMapper {
                 null,
                 item.getComments() == null ? null :
                         item.getComments().stream()
-                                .map(CommentMapper::toCommentInnerDto)
+                                .map(CommentMapper::toCommentDto)
                                 .collect(Collectors.toList())
         );
     }
@@ -60,7 +60,7 @@ public class ItemMapper {
                                 .orElse(null),
                 item.getComments() == null ? null :
                         item.getComments().stream()
-                                .map(CommentMapper::toCommentInnerDto)
+                                .map(CommentMapper::toCommentDto)
                                 .collect(Collectors.toList())
         );
     }

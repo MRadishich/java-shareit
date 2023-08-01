@@ -249,7 +249,7 @@ class ItemControllerTest {
                 null,
                 "new comment",
                 "new user",
-                LocalDateTime.now()
+                LocalDateTime.now().withNano(0)
         );
 
         //when
@@ -402,7 +402,7 @@ class ItemControllerTest {
                 null,
                 "text",
                 "new user",
-                LocalDateTime.now()
+                LocalDateTime.now().withNano(0)
         );
 
         //when
