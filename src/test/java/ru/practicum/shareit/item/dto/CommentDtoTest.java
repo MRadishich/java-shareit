@@ -20,7 +20,7 @@ class CommentDtoTest {
     @SneakyThrows
     public void testCommentDto() {
         //given
-        LocalDateTime currentTime = LocalDateTime.now();
+        LocalDateTime currentTime = LocalDateTime.now().withNano(0);
         CommentDto commentDto = new CommentDto(
                 1L,
                 "I need item",
