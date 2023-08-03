@@ -1,6 +1,6 @@
 package ru.practicum.shareit.booking.service;
 
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingInputDto;
@@ -32,7 +32,7 @@ public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
-    private final Map<State, BookingFinderByBooker> bookingFinderByUser;
+    private final Map<State, BookingFinderByBooker> bookingFinderByBooker;
     private final Map<State, BookingFinderByOwner> bookingFinderByOwner;
 
     public BookingServiceImpl(BookingRepository bookingRepository,
@@ -43,7 +43,7 @@ public class BookingServiceImpl implements BookingService {
         this.bookingRepository = bookingRepository;
         this.userRepository = userRepository;
         this.itemRepository = itemRepository;
-        this.bookingFinderByUser = bookingFinderByBooker.stream()
+        this.bookingFinderByBooker = bookingFinderByBooker.stream()
                 .collect(Collectors.toMap(BookingFinderByBooker::getState, Function.identity()));
         this.bookingFinderByOwner = bookingFinderByOwner.stream()
                 .collect(Collectors.toMap(BookingFinderByOwner::getState, Function.identity()));
@@ -63,7 +63,7 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new NotFountException("Item with id = " + itemId + " not found."));
 
         if (!item.getAvailable()) {
-            throw new BadRequestException("Item with id = " + itemId + " not available");
+            throw new BadRequestException("Item with id = " + itemId + " not available.");
         }
 
         if (item.getOwnerId().equals(userId)) {
@@ -71,12 +71,10 @@ public class BookingServiceImpl implements BookingService {
         }
 
         Booking booking = BookingMapper.toBooking(bookingDto);
-        booking.setBooker(booker);
-        booking.setItem(item);
-        booking.setStatus(BookingStatus.WAITING);
+        updateFields(booker, item, booking);
         booking = bookingRepository.save(booking);
 
-        return BookingMapper.toOutputBookingDto(booking).orElse(null);
+        return BookingMapper.toBookingOutputDto(booking).orElse(null);
     }
 
     private void checkDates(LocalDateTime start, LocalDateTime end) {
@@ -85,9 +83,15 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
+    private void updateFields(User booker, Item item, Booking booking) {
+        booking.setBooker(booker);
+        booking.setItem(item);
+        booking.setStatus(BookingStatus.WAITING);
+    }
+
     @Override
     @Transactional(readOnly = true)
-    public BookingOutputDto getBooking(long bookingId, long userId) {
+    public BookingOutputDto getBooking(Long bookingId, Long userId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFountException("Booking with id = " + bookingId + " not found."));
 
@@ -95,24 +99,24 @@ public class BookingServiceImpl implements BookingService {
             throw new NotFountException("User with id = " + userId + " not found.");
         }
 
-        if (booking.getBooker().getId() != userId && booking.getItem().getOwnerId() != userId) {
+        if (!booking.getBooker().getId().equals(userId) && !booking.getItem().getOwnerId().equals(userId)) {
             throw new NotFountException("User with id = " + userId + " "
                     + "does not have booking with id = " + bookingId);
         }
 
-        return BookingMapper.toOutputBookingDto(booking).orElse(null);
+        return BookingMapper.toBookingOutputDto(booking).orElse(null);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookingOutputDto> getBookingsByBookerIdAndState(long bookerId, State state, Sort.Direction sort) {
+    public List<BookingOutputDto> getBookingsByBookerIdAndState(Long bookerId, State state, Pageable pageable) {
         if (!userRepository.existsById(bookerId)) {
             throw new NotFountException("User with id = " + bookerId + " not found.");
         }
 
-        return bookingFinderByUser.get(state).findBooking(bookerId, Sort.by(sort, "start"))
+        return bookingFinderByBooker.get(state).findBooking(bookerId, pageable)
                 .stream()
-                .map(BookingMapper::toOutputBookingDto)
+                .map(BookingMapper::toBookingOutputDto)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
@@ -120,14 +124,14 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookingOutputDto> getBookingsByOwnerIdAndState(long ownerId, State state, Sort.Direction sort) {
+    public List<BookingOutputDto> getBookingsByOwnerIdAndState(Long ownerId, State state, Pageable pageable) {
         if (!userRepository.existsById(ownerId)) {
             throw new NotFountException("User with id = " + ownerId + " not found.");
         }
 
-        return bookingFinderByOwner.get(state).findBooking(ownerId, Sort.by(sort, "start"))
+        return bookingFinderByOwner.get(state).findBooking(ownerId, pageable)
                 .stream()
-                .map(BookingMapper::toOutputBookingDto)
+                .map(BookingMapper::toBookingOutputDto)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
@@ -135,7 +139,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingOutputDto changeStatus(long userId, long bookingId, boolean approved) {
+    public BookingOutputDto changeStatus(Long userId, Long bookingId, Boolean approved) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new NotFountException("User with id = " + userId + " not found."));
 
@@ -153,6 +157,6 @@ public class BookingServiceImpl implements BookingService {
         booking.setStatus(approved ? BookingStatus.APPROVED : BookingStatus.REJECTED);
         bookingRepository.save(booking);
 
-        return BookingMapper.toOutputBookingDto(booking).orElse(null);
+        return BookingMapper.toBookingOutputDto(booking).orElse(null);
     }
 }

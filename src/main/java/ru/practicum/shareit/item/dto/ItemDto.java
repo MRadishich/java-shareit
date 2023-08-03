@@ -1,50 +1,36 @@
 package ru.practicum.shareit.item.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import ru.practicum.shareit.booking.dto.BookingInnerDto;
 import ru.practicum.shareit.validation.Create;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Objects;
 
 @Getter
-@Setter
 @ToString
+@EqualsAndHashCode
 @AllArgsConstructor
+@NoArgsConstructor
 public class ItemDto {
 
-    private final Long id;
+    private Long id;
 
     @NotBlank(groups = Create.class)
-    private final String name;
+    private String name;
 
     @NotBlank(groups = Create.class)
-    private final String description;
+    private String description;
 
     @NotNull(groups = Create.class)
-    private final Boolean available;
+    private Boolean available;
 
-    private final BookingInnerDto lastBooking;
+    private Long requestId;
 
-    private final BookingInnerDto nextBooking;
+    private BookingInnerDto lastBooking;
 
-    private final List<CommentInnerDto> comments;
+    private BookingInnerDto nextBooking;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ItemDto itemDto = (ItemDto) o;
-        return Objects.equals(id, itemDto.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+    private List<CommentDto> comments;
 }

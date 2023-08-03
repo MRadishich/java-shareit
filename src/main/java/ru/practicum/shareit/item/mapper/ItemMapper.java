@@ -19,6 +19,7 @@ public class ItemMapper {
         item.setName(itemDto.getName());
         item.setDescription(itemDto.getDescription());
         item.setAvailable(itemDto.getAvailable());
+        item.setRequestId(itemDto.getRequestId());
         return item;
     }
 
@@ -28,11 +29,12 @@ public class ItemMapper {
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
+                item.getRequestId(),
                 null,
                 null,
                 item.getComments() == null ? null :
                         item.getComments().stream()
-                                .map(CommentMapper::toCommentInnerDto)
+                                .map(CommentMapper::toCommentDto)
                                 .collect(Collectors.toList())
         );
     }
@@ -43,6 +45,7 @@ public class ItemMapper {
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
+                item.getRequestId(),
                 item.getBookings() == null ? null :
                         BookingMapper.toBookingInnerDto(item.getBookings().stream()
                                         .filter(booking -> booking.getStart().isBefore(LocalDateTime.now())
@@ -57,7 +60,7 @@ public class ItemMapper {
                                 .orElse(null),
                 item.getComments() == null ? null :
                         item.getComments().stream()
-                                .map(CommentMapper::toCommentInnerDto)
+                                .map(CommentMapper::toCommentDto)
                                 .collect(Collectors.toList())
         );
     }

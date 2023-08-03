@@ -30,6 +30,9 @@ public class Item {
     @Column(name = "owner_id")
     private Long ownerId;
 
+    @Column(name = "request_id")
+    private Long requestId;
+
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "item_id")
     private List<Booking> bookings;
