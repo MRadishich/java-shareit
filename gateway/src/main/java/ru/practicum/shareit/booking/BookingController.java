@@ -12,15 +12,14 @@ import ru.practicum.shareit.booking.enums.State;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.time.LocalDateTime;
 
 import static ru.practicum.shareit.booking.util.Constant.*;
 
 @Controller
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
-@Validated
 @Slf4j
+@Validated
 public class BookingController {
     private final BookingClient bookingClient;
 
