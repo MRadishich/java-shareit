@@ -8,7 +8,6 @@ import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.json.JsonContent;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @JsonTest
 class ItemRequestInputDtoTest {
@@ -27,7 +26,7 @@ class ItemRequestInputDtoTest {
         //when
         JsonContent<ItemRequestInputDto> content = jacksonTester.write(itemRequestInputDto);
 
-        assertThat(content).extractingJsonPathStringValue("$.description")
+        assertThat(content).extractingJsonPathStringValue("$.description").asString()
                 .isEqualTo("I need item");
     }
 }
