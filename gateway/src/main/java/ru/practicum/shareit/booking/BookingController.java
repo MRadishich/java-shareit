@@ -11,7 +11,8 @@ import ru.practicum.shareit.booking.dto.BookingInputDto;
 import ru.practicum.shareit.booking.enums.State;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 import static ru.practicum.shareit.booking.util.Constant.*;
 
@@ -41,8 +42,8 @@ public class BookingController {
     @GetMapping
     public ResponseEntity<Object> getBookingsByBooker(@RequestHeader(USER_ID_HEADER) long userId,
                                                       @RequestParam(defaultValue = "all") String state,
-                                                      @RequestParam(value = "from", defaultValue = "0") @Min(0) int from,
-                                                      @RequestParam(value = "size", defaultValue = DEFAULT_NUMBER_ELEMENT_PER_PAGE) @Min(1) int size,
+                                                      @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from,
+                                                      @RequestParam(value = "size", defaultValue = DEFAULT_NUMBER_ELEMENT_PER_PAGE) @Positive int size,
                                                       @RequestParam(value = "sort", defaultValue = "start") String sort,
                                                       @RequestParam(value = "dir", defaultValue = DESC) String dir) {
         log.info("Get booking by booker. User id = {}, state = {}, from = {}, size = {}, sort = {}, dir = {}",
@@ -53,8 +54,8 @@ public class BookingController {
     @GetMapping("/owner")
     public ResponseEntity<Object> getBookingsByOwner(@RequestHeader(USER_ID_HEADER) long userId,
                                                      @RequestParam(defaultValue = "all") String state,
-                                                     @RequestParam(value = "from", defaultValue = "0") @Min(0) int from,
-                                                     @RequestParam(value = "size", defaultValue = DEFAULT_NUMBER_ELEMENT_PER_PAGE) @Min(1) int size,
+                                                     @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from,
+                                                     @RequestParam(value = "size", defaultValue = DEFAULT_NUMBER_ELEMENT_PER_PAGE) @Positive int size,
                                                      @RequestParam(value = "sort", defaultValue = "start") String sort,
                                                      @RequestParam(value = "dir", defaultValue = DESC) String dir) {
         log.info("Get booking by owner. User id = {}, state = {}, from = {}, size = {}, sort = {}, dir = {}",

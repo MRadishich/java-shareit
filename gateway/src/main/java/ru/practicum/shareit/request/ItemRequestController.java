@@ -4,16 +4,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestInputDto;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 import static ru.practicum.shareit.booking.util.Constant.*;
 
-@RestController
+@Controller
 @RequestMapping(path = "/requests")
 @RequiredArgsConstructor
 @Validated
@@ -39,8 +41,8 @@ public class ItemRequestController {
 
     @GetMapping("/all")
     public ResponseEntity<Object> getOtherRequests(@RequestHeader(USER_ID_HEADER) long userId,
-                                                   @RequestParam(value = "from", defaultValue = "0") @Min(0) int from,
-                                                   @RequestParam(value = "size", defaultValue = DEFAULT_NUMBER_ELEMENT_PER_PAGE) @Min(0) int size,
+                                                   @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from,
+                                                   @RequestParam(value = "size", defaultValue = DEFAULT_NUMBER_ELEMENT_PER_PAGE) @Positive int size,
                                                    @RequestParam(value = "sort", defaultValue = "created") String sort,
                                                    @RequestParam(value = "dir", defaultValue = DESC) String dir) {
         log.info("Get other requests. User id = {}", userId);

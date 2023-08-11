@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
@@ -11,12 +12,13 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.validation.Create;
 import ru.practicum.shareit.validation.Update;
 
-import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 import static ru.practicum.shareit.booking.util.Constant.*;
 
-@RestController
+@Controller
 @RequestMapping("/items")
 @RequiredArgsConstructor
 @Validated
@@ -42,8 +44,8 @@ public class ItemController {
 
     @GetMapping
     public ResponseEntity<Object> getItemsByUserId(@RequestHeader(USER_ID_HEADER) long userId,
-                                                   @RequestParam(value = "from", defaultValue = "0") @Min(0) int from,
-                                                   @RequestParam(value = "size", defaultValue = DEFAULT_NUMBER_ELEMENT_PER_PAGE) @Min(0) int size,
+                                                   @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from,
+                                                   @RequestParam(value = "size", defaultValue = DEFAULT_NUMBER_ELEMENT_PER_PAGE) @Positive int size,
                                                    @RequestParam(value = "sort", defaultValue = "id") String sort,
                                                    @RequestParam(value = "dir", defaultValue = ASC) String dir) {
         log.info("Get items by user id. User id = {}", userId);
@@ -59,8 +61,8 @@ public class ItemController {
 
     @GetMapping("/search")
     public ResponseEntity<Object> getItemsByText(@RequestParam(required = false) String text,
-                                                 @RequestParam(value = "from", defaultValue = "0") @Min(0) int from,
-                                                 @RequestParam(value = "size", defaultValue = DEFAULT_NUMBER_ELEMENT_PER_PAGE) @Min(0) int size,
+                                                 @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from,
+                                                 @RequestParam(value = "size", defaultValue = DEFAULT_NUMBER_ELEMENT_PER_PAGE) @Positive int size,
                                                  @RequestParam(value = "sort", defaultValue = "id") String sort,
                                                  @RequestParam(value = "dir", defaultValue = ASC) String dir) {
         log.info("Get items by text. Text = {}", text);
