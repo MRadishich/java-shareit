@@ -45,8 +45,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public void deleteUserById(@PathVariable long userId) {
+    public ResponseEntity<Object> deleteUserById(@PathVariable long userId) {
         log.info("Delete user. User id = {}", userId);
-        userClient.deleteUserById(userId);
+        return userClient.deleteUserById(userId);
     }
 }
